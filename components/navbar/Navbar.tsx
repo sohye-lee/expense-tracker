@@ -2,6 +2,7 @@ import NavSearch from "./NavSearch";
 import LinksDropdown from "./LinksDropdown";
 import ModeSwitch from "./ModeSwitch";
 import Logo from "./Logo";
+import UserIcon from "./UserIcon";
 
 
 function Navbar() {
@@ -11,8 +12,9 @@ function Navbar() {
             <Logo />
             <NavSearch />
             <div className="flex gap-4 items-center">
-                <ModeSwitch />
-                <LinksDropdown />
+              <LinksDropdown />
+              <UserIcon />
+              <ModeSwitch />
             </div>
         </div>
     </nav>
