@@ -6,70 +6,71 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import UserIcon from "./UserIcon";
+import { links } from "@/lib/links";
+import Link from "next/link";
+import NavSearch from "./NavSearch";
+import SignOutLink from "./SignOutLink";
+import { SignedIn, SignedOut, SignIn, SignInButton } from "@clerk/nextjs";
 
 function LinksDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="w-9 h-9 p-1 "><HamburgerMenuIcon /></Button>
+        <Button variant="outline" className="p-2 flex items-center gap-2">
+          <HamburgerMenuIcon />
+          <UserIcon />
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Keyboard shortcuts
-            <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Email</DropdownMenuItem>
-                <DropdownMenuItem>Message</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>More...</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuItem>
-            New Team
-            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>GitHub</DropdownMenuItem>
-        <DropdownMenuItem>Support</DropdownMenuItem>
-        <DropdownMenuItem disabled>API</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+      <DropdownMenuContent className="w-52 data-[side=right] right-2">
+        <DropdownMenuItem className=" block md:hidden">
+          <NavSearch />
         </DropdownMenuItem>
+
+        <SignedIn>
+          <DropdownMenuLabel>Welcome back!</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            {links.filter(link => link.access == 'user').map(link => <DropdownMenuItem key={link.href}>
+              <Link href={link.href} className="capitalize" target={link.target || '_self'}>
+                {link.label}
+              </Link>
+            </DropdownMenuItem>)}
+          </DropdownMenuGroup>
+        </SignedIn>
+        <SignedOut>
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <SignInButton>
+                <button className="">
+                  Login
+                </button>
+              </SignInButton>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </SignedOut>
+          <DropdownMenuItem>
+            <Link href="/contact">
+              Contact
+            </Link>
+        </DropdownMenuItem>
+        <SignedIn>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            {links.filter(link => link.access == 'admin').map((link) => <DropdownMenuItem key={link.href}>
+              <Link href={link.href} className="capitalize">
+                {link.label}
+              </Link>
+            </DropdownMenuItem>)}
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <SignOutLink />
+          </DropdownMenuItem>
+        </SignedIn>
       </DropdownMenuContent>
     </DropdownMenu>
   )
