@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import UserIcon from "./UserIcon";
-import { links } from "@/lib/links";
+import { links } from "@/utils/links";
 import Link from "next/link";
 import NavSearch from "./NavSearch";
 import SignOutLink from "./SignOutLink";
