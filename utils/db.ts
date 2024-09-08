@@ -7,11 +7,11 @@ const prismaClientSingle = () => {
 type PrismaClientSingle = ReturnType<typeof prismaClientSingle>;
 
 const globalPrisma = globalThis as unknown as {
-    prisma: PrismaClientSingle | undefined;
+    db: PrismaClientSingle | undefined;
 };
 
-const prisma = globalPrisma.prisma ?? prismaClientSingle();
+const db = globalPrisma.db ?? prismaClientSingle();
 
-export default prisma;
+export default db;
 
-if (process.env.NODE_ENV !== 'production') globalPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== 'production') globalPrisma.db = db;
