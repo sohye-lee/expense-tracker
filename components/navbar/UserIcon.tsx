@@ -1,9 +1,18 @@
+'use server'
+import { fetchProfileImage } from '@/utils/actions';
+import db from '@/utils/db'
+import { useEffect, useState } from 'react'
 import { LuUser2 } from 'react-icons/lu'
  
-function UserIcon() {
+ async function UserIcon() {
+  const imageUrl = await fetchProfileImage();
+ 
   return (
-      <div className="w-6 h-6 flex items-center justify-center rounded-full border border-slate-200">
-        <LuUser2 />
+    <div className="w-6 h-6 flex items-center justify-center rounded-full border border-slate-200">
+      {imageUrl ? 
+        <img src={imageUrl} alt="profile image" className='object-cover min-h-full min-w-full' />
+      :  <LuUser2 />
+      }
       </div>
  
   )

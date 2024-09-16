@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
+
 const prismaClientSingle = () => {
     return new PrismaClient();
 }
@@ -7,11 +8,11 @@ const prismaClientSingle = () => {
 type PrismaClientSingle = ReturnType<typeof prismaClientSingle>;
 
 const globalPrisma = globalThis as unknown as {
-    db: PrismaClientSingle | undefined;
+    prisma: PrismaClientSingle | undefined;
 };
 
-const db = globalPrisma.db ?? prismaClientSingle();
+const db = globalPrisma.prisma ?? prismaClientSingle();
 
 export default db;
 
-if (process.env.NODE_ENV !== 'production') globalPrisma.db = db;
+if (process.env.NODE_ENV !== 'production') globalPrisma.prisma = db;

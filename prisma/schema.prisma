@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,14 +8,65 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Profile {
-  id        String  @id @default(uuid())
-  clerkId   String  @unique
-  firstName String 
-  lastName  String 
-  username  String
-  email     String 
-  profileImage  String 
+model User {
+  id            String  @id @default(uuid())
+  clerkId       String  @unique
+  firstName     String
+  lastName      String 
+  username      String
+  email         String
+  profileImage  String?
+  admin         Boolean @default(false)
+
+  categories    Category[]
+  subcategories Subcategory[]
+  transactions  Transaction[]
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model Category {
+  id              String @id @default(uuid())
+  name            String 
+  description     String?
+  order           Int @default(0)
+
+  subcategories   Subcategory[]
+
+  userId          String 
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subcategory {
+  id              String @id @default(uuid())
+  name            String 
+  description     String?
+  order           Int @default(0)
+
+  transactions    Transaction[]
+
+  parentId        String
+  parent          Category @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  userId          String 
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id              String @id @default(uuid())
+  title           String 
+  amount          Float @default(0.0) 
+  merchant        String?
+  type            String 
+  notes           String? 
+  paymentMethod   String?
+  // recurring     Boolean @default(false)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+ 
+  subcategoryId   String 
+  subcategory     Subcategory  @relation(fields: [subcategoryId], references: [id])
+  userId          String 
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

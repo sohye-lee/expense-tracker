@@ -3,6 +3,7 @@ import { useFormState } from "react-dom";
 import React, { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ActionFunction } from '@/utils/types';
+import { redirect } from "next/navigation";
 
 const initialState = {
     message: '',
@@ -12,9 +13,10 @@ const initialState = {
 interface FormContainerProps {
     action: ActionFunction;
     children: React.ReactNode;
+    [key: string]: any;
 }
 
-function FormContainer({ action, children }: FormContainerProps) {
+function FormContainer({ action, children, rest }: FormContainerProps) {
 
     const [state, formAction] = useFormState(action, initialState);
     const { toast } = useToast();
@@ -24,7 +26,7 @@ function FormContainer({ action, children }: FormContainerProps) {
     }, [state, toast])
 
    return (
-        <form action={formAction}>
+        <form action={formAction} {...rest}>
               {children}
         </form>
   )
