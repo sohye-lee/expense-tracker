@@ -9,19 +9,29 @@ import { profileSchema } from './schemas';
 export const createProfileAction = async (prevState: any, formData: FormData) => {
     try {
         const user = await currentUser();
-        if (!user) throw new Error('Please login to create your profile.');
+        if (!user) return {
+            ok: false,
+            message: 'Please login to create your profile.'
+        }
+        // if (!user) throw new Error('Please login to create your profile.');
         const rawData = Object.fromEntries(formData);
         const validatedData = profileSchema.parse(rawData);
-        console.log(validatedData);
-        const newProfile = await db.user.create({
-            data: {
+        const newProfile = await db.user.upsert({
+            where: {
+                clerkId: user?.id,
+            },
+            update: {
+                email: user.emailAddresses[0].emailAddress,
+                profileImage: user.imageUrl ?? '',
+                ...validatedData,
+            },
+            create: {
                 clerkId: user?.id,
                 email: user.emailAddresses[0].emailAddress,
                 profileImage: user.imageUrl ?? '',
                 ...validatedData,
             }
         });
-        console.log(newProfile)
         await clerkClient.users.updateUserMetadata(user.id, {
             privateMetadata: {
                 hasProfile: true,
@@ -46,24 +56,27 @@ export const createProfileAction = async (prevState: any, formData: FormData) =>
 
 export const fetchProfileImage = async () => {
  
-        const user = await currentUser();
-        if (!user) throw new Error('Please login to create your profile.');
-        const userData = await db.user.findUnique({
-            where: {
-                clerkId: user.id,
-            },
-            select: {
-                profileImage: true
-            }
-        });
+    const user = await currentUser();
+    if (!user) return null;
+    const userData = await db.user.findUnique({
+        where: {
+            clerkId: user.id,
+        },
+        select: {
+            profileImage: true
+        }
+    });
 
-        return userData?.profileImage;
+    return userData?.profileImage;
     
 }
 
 export const fetchUser = async () => {
     const currentUserData = await currentUser();
-    if (!currentUserData) throw new Error('No user found.');
+    if (!currentUserData) return {
+        ok: false,
+        message: 'No user found.'
+    }
     const user = await db.user.findUnique({
         where: {
             clerkId: currentUserData.id, 
@@ -73,6 +86,30 @@ export const fetchUser = async () => {
     return {
         ok: true, 
         user,
+    }
+    
+}
+
+export const hasProfile = async () => {
+    const currentUserData = await currentUser();
+    if (!currentUserData) return {
+        ok: false,
+        existing: false,
+        profile: null
+    }
+
+    const profile = await db.user.findFirst({
+        where: {
+            clerkId: currentUserData?.id,
+        }
+    })
+
+    const existing = profile ? true : false;
+
+    return {
+        ok: true,
+        existing,
+        profile
     }
     
 }
