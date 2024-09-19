@@ -1,7 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 'use server'
 import { fetchProfileImage } from '@/utils/actions';
-import db from '@/utils/db'
-import { useEffect, useState } from 'react'
 import { LuUser2 } from 'react-icons/lu'
  
  async function UserIcon() {

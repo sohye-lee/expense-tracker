@@ -4,9 +4,10 @@ import db from './db';
 import { auth, clerkClient, currentUser } from '@clerk/nextjs/server'
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { profileSchema } from './schemas';
+import { categorySchema, profileSchema } from './schemas';
 
-export const createProfileAction = async (prevState: any, formData: FormData) => {
+// USER AND PROFILE
+export const upsertProfile = async (prevState: any, formData: FormData) => {
     try {
         const user = await currentUser();
         if (!user) return {
@@ -111,5 +112,64 @@ export const hasProfile = async () => {
         existing,
         profile
     }
+}
+
+
+// CATEGORY
+export const createCategory = async (prevState: any, formData: FormData) => {
+    try {
+        const user = await currentUser();
+        if (!user) return {
+            ok: false,
+            message: 'Please login to create your profile.'
+        }
+        const rawData = Object.fromEntries(formData);
+        const validatedData = categorySchema.parse(rawData);
+
+        const newCategory = await db.category.create({
+            data: {
+                ...validatedData,
+                userId: user.id,
+                order: typeof validatedData.order == 'number' ? validatedData.order : Number(validatedData.order),
+                name: validatedData.name.toLowerCase()
+            }
+        })
+
+        return {
+            ok: true, 
+            message: "Successfully created",
+            category: newCategory
+        }
+    } catch (error) {
+        return {
+            ok: false, 
+            message: error instanceof Error ? error.message : 'We encountered an error. Please retry.'
+        }
+    }
+}
+
+export const fetchCategories = async () => {
+    const user = await currentUser();
+    if (!user) return null;
+    const categories = await db.category.findMany({
+        where: {
+            userId: user?.id,
+        },
+        include: {
+            subcategories: true,
+        }
+    });
+
+    if (!categories) return {
+        ok: false, 
+        message: 'No category yet. Please create.',
+        categories: null
+    }
     
+    // redirect('/categories');
+    
+    return {
+        ok: true, 
+        categories,
+    }
 }

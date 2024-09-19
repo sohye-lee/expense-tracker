@@ -35,7 +35,7 @@ model Category {
   subcategories   Subcategory[]
 
   userId          String 
-  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
 }
 
 model Subcategory {
