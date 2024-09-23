@@ -16,9 +16,10 @@ async function CreateProfilePage() {
           <FormInput formType="input" required type="text" name="firstName" label="First Name" defaultValue={profile?.firstName ?? ""}  />
           <FormInput formType="input" required type="text" name="lastName" label="Last Name" defaultValue={profile?.lastName || ''}  />
         </div>
-          <FormInput formType="input" required type="text" name="username" label="Username" defaultValue={profile?.username || ''}  />
-
-        <SubmitButton className="mt-3" text={`${title} Profile`}  />
+        <FormInput formType="input" required type="text" name="username" label="Username" defaultValue={profile?.username || ''}  />
+        <div>
+          <SubmitButton className="mt-3" text={`${title} Profile`}  />
+        </div>
     </FormContainer>
   )
 }

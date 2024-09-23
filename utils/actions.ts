@@ -4,7 +4,7 @@ import db from './db';
 import { auth, clerkClient, currentUser } from '@clerk/nextjs/server'
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { categorySchema, profileSchema } from './schemas';
+import { categorySchema, profileSchema, subCategorySchema } from './schemas';
 
 // USER AND PROFILE
 export const upsertProfile = async (prevState: any, formData: FormData) => {
@@ -116,7 +116,7 @@ export const hasProfile = async () => {
 
 
 // CATEGORY
-export const createCategory = async (prevState: any, formData: FormData) => {
+export const createCategory = async (formData: FormData) => {
     try {
         const user = await currentUser();
         if (!user) return {
@@ -126,11 +126,21 @@ export const createCategory = async (prevState: any, formData: FormData) => {
         const rawData = Object.fromEntries(formData);
         const validatedData = categorySchema.parse(rawData);
 
+        const existingCategory = await db.category.findFirst({
+            where: {
+                name: validatedData.name,
+            }
+        })
+
+        if (existingCategory) return {
+            ok: false,
+            message: 'Already exists'
+        }
+        
         const newCategory = await db.category.create({
             data: {
                 ...validatedData,
                 userId: user.id,
-                order: typeof validatedData.order == 'number' ? validatedData.order : Number(validatedData.order),
                 name: validatedData.name.toLowerCase()
             }
         })
@@ -140,6 +150,7 @@ export const createCategory = async (prevState: any, formData: FormData) => {
             message: "Successfully created",
             category: newCategory
         }
+
     } catch (error) {
         return {
             ok: false, 
@@ -166,10 +177,111 @@ export const fetchCategories = async () => {
         categories: null
     }
     
-    // redirect('/categories');
-    
     return {
         ok: true, 
         categories,
+    }
+}
+
+export const editCategory = async (id: string, formData: FormData) => {
+
+    try {
+        const user = await currentUser();
+        if (!user) return {
+            ok: false,
+            message: 'Please login.'
+        }
+        const rawData = Object.fromEntries(formData);
+        const validatedData = categorySchema.parse(rawData);
+
+        const updatedCategory = await db.category.update({
+            where: {
+                id,
+            }, 
+            data: {
+                ...validatedData, 
+                name: validatedData.name.toLowerCase()
+            }
+        })
+
+        return {
+            ok: true, 
+            message: "Successfully updated.",
+            category: updatedCategory,
+        }
+        
+    } catch (error) {
+        return {
+            ok: false, 
+            message: error instanceof Error ? error.message : 'We encountered an error. Please retry.'
+        }
+    }
+}
+
+// SUBCATEGORY
+export const createSubCategory = async (formData: FormData) => {
+    try {
+        const user = await currentUser();
+        if (!user) return {
+            ok: false,
+            message: 'Please login.'
+        }
+        const rawData = Object.fromEntries(formData);
+        const validatedData = subCategorySchema.parse(rawData);
+
+        const subcategory = await db.subcategory.create({
+            data: {
+                ...validatedData,
+                userId: user.id, 
+                name: validatedData.name.toLowerCase()
+            }
+        })
+
+        return {
+            ok: true, 
+            message: "Successfully updated.",
+            subcategory,
+        }
+
+    } catch (error) {
+        return {
+            ok: false, 
+            message: error instanceof Error ? error.message : 'We encountered an error. Please retry.'
+        }
+    }
+}
+
+export const editSubCategory = async (id: string, formData: FormData) => {
+
+    try {
+        const user = await currentUser();
+        if (!user) return {
+            ok: false,
+            message: 'Please login.'
+        }
+        const rawData = Object.fromEntries(formData);
+        const validatedData = subCategorySchema.parse(rawData);
+
+        const subcategory = await db.subcategory.update({
+            where: {
+                id,
+            }, 
+            data: {
+                ...validatedData, 
+                name: validatedData.name.toLowerCase()
+            }
+        })
+
+        return {
+            ok: true, 
+            message: "Successfully updated.",
+            subcategory
+        }
+        
+    } catch (error) {
+        return {
+            ok: false, 
+            message: error instanceof Error ? error.message : 'We encountered an error. Please retry.'
+        }
     }
 }

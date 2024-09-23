@@ -10,3 +10,18 @@ export type User = {
     profileImage?: string;
     admin: boolean;
 }
+
+export type SubCategory = {
+    id: string;
+    name: string;
+    parentId: string;
+    userId: string;
+}
+ 
+export type Category = {
+    id: string;
+    name: string;
+    userId: string;
+    subcategories: SubCategory[];
+}
+ 

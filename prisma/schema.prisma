@@ -28,9 +28,7 @@ model User {
 
 model Category {
   id              String @id @default(uuid())
-  name            String 
-  description     String?
-  order           Int @default(0)
+  name            String @unique
 
   subcategories   Subcategory[]
 
@@ -40,16 +38,14 @@ model Category {
 
 model Subcategory {
   id              String @id @default(uuid())
-  name            String 
-  description     String?
-  order           Int @default(0)
+  name            String @unique
 
   transactions    Transaction[]
 
   parentId        String
   parent          Category @relation(fields: [parentId], references: [id], onDelete: Cascade)
   userId          String 
-  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
 }
 
 model Transaction {

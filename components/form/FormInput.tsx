@@ -6,7 +6,7 @@ interface FormInput {
     type?: 'text' | 'email' | 'password' | 'number';
     formType?: 'input' | 'textarea';
     name: string;
-    label?: string;
+    label?: string | 'hidden';
     required: boolean;
     defaultValue?: string | number;
     placeholder?: string;
@@ -15,8 +15,10 @@ interface FormInput {
 
 function FormInput({type = 'text', formType = 'input', name, label, required = false, defaultValue, placeholder, ...rest}: FormInput) {
   return (
-    <div className="mb-2">
+    <div className="w-full">
+      {label != 'hidden' &&
       <Label className="capitalize" htmlFor={name}>{label || name}</Label>
+      }
       {formType == 'input' ? 
         <Input id={name} name={name} type={type} placeholder={placeholder} defaultValue={defaultValue} required={required} {...rest}  />
         :
