@@ -6,10 +6,11 @@ import { Category } from '@/utils/types'
 import { PlusIcon, MinusIcon, Pencil2Icon, Pencil1Icon, CheckCircledIcon, CheckIcon, Cross1Icon } from '@radix-ui/react-icons';
 import { redirect, useRouter } from 'next/navigation';
 import { FormEvent, useEffect, useState } from 'react';
+import SubcategoryItem from './subcategoryItem';
 
-const initialState = {
-    message: '',
-}
+// const initialState = {
+//     message: '',
+// }
 
 function CategoryItem({ category }: { category: Category }) {
     const router = useRouter();
@@ -109,6 +110,7 @@ function CategoryItem({ category }: { category: Category }) {
                 </button>
             </div>
 
+          {itemOpen &&
           <div className="w-full px-4 py-3 flex flex-col gap-4">
               <form action={addSubCategory} className='flex justify-between items-end gap-2'>
                   <div className='w-full'>
@@ -119,17 +121,14 @@ function CategoryItem({ category }: { category: Category }) {
               </form>
               {category.subcategories.length > 0 &&
               
-              <div className="grid grid-flow-col grid-cols-2items-stretch gap-2">
+              <div className="flex flex-col gap-2">
                     {category.subcategories.map((s) => {
-                          return <div key={s.id} className='bg-slate-300 text-black border border-slate-400 hover:bg-blue-400 hover:text-white text-sm px-3 py-1 rounded-md'>
-                            <span className='capitalize'>
-                            {s.name}
-                            </span>
-                         </div>
-                     })}
+                        return <SubcategoryItem subcategory={s} parentId={category.id} key={s.id} /> 
+                    })}
               </div>
             }
           </div>
+          }
       </div>
   )
 }

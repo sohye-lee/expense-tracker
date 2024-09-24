@@ -252,7 +252,7 @@ export const createSubCategory = async (formData: FormData) => {
 }
 
 export const editSubCategory = async (id: string, formData: FormData) => {
-
+    console.log(formData);
     try {
         const user = await currentUser();
         if (!user) return {
