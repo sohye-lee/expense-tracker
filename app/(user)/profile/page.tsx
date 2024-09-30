@@ -6,7 +6,7 @@ import { upsertProfile, hasProfile } from "@/utils/actions";
  
 
 async function CreateProfilePage() {
-  const alreadyExists:any = await hasProfile();
+  const alreadyExists: any = await hasProfile();
   const profile = alreadyExists?.ok ? alreadyExists?.profile : null;
   const title = alreadyExists?.ok && alreadyExists?.profile ? "Update" : "Create";
 

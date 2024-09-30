@@ -28,7 +28,7 @@ function FormContainer({ action, children, title, className, rest }: FormContain
     }, [state, toast])
 
     return (
-        <section className="max-w-2xl mx-auto">
+        <section className="max-w-2xl mx-auto bg-white dark:bg-slate-900 px-5 py-4 rounded-lg">
             <FormTitle title={title} />
             <div>
                 <form action={formAction} className={cn('flex flex-col gap-2', className)} {...rest}>

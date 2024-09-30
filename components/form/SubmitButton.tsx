@@ -13,7 +13,7 @@ type SubmitButtonProps = {
 function SubmitButton({className = '', text = 'submit', mode}: SubmitButtonProps) {
     const { pending } = useFormStatus();
     return (
-    <Button className={`capitalize min-w-[160px] ${className} ${ !mode || mode == 'create' ? 'bg-blue-800 ' : mode == 'edit' ? 'bg-emerald-800' :mode == 'delete' ? 'bg-red-500': ''} hover:bg-slate-600`} type="submit" disabled={pending} variant={pending ? 'secondary': 'default'}>
+    <Button className={`capitalize min-w-[160px] ${className} ${ !mode || mode == 'create' ? 'bg-blue-800  dark:bg-blue-500' : mode == 'edit' ? 'bg-emerald-800' :mode == 'delete' ? 'bg-red-500': ''} hover:bg-slate-600`} type="submit" disabled={pending} variant={pending ? 'secondary': 'default'}>
         {pending && <span className="animate-spin"><ReloadIcon width="20" /></span>} {pending? 'Please wait...' : text}
     </Button>
   )

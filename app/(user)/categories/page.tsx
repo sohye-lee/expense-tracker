@@ -9,6 +9,7 @@ import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons"
 import FormTitle from "@/components/form/FormTitle";
 import { useToast } from "@/hooks/use-toast";
 import CategoryItem from "./categoryItem";
+import { sortName } from "@/utils/funs";
 
 const initialState = {
     message: '',
@@ -49,13 +50,13 @@ function CategoriesPage() {
 
   return (
     <main>
-      <div className="max-w-2xl mx-auto flex flex-col gap-4">
-        <div className="flex align-items mb-4 justify-between">
+      <div className="max-w-2xl mx-auto flex flex-col gap-2">
+        <div className="flex align-items mb-2 justify-between">
           <H2 content="Categories" /> 
           <button className="bg-blue-800 text-white h-8 w-16 flex items-center justify-center rounded-[4px]" onClick={() => setOpen(true)}><PlusIcon /></button>
         </div>
         <div className="flex flex-col gap-2">
-        {categories && categories.length > 0 ? categories.map((c:any) => {
+        {categories && categories.length > 0 ? categories.sort(sortName).map((c:any) => {
           return <CategoryItem key={c.id} category={c} />
         }): <span>No category yet.</span>}
         </div>
